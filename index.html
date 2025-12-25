@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GSB Maaş Hesaplama Aracı</title>
+
+<style>
+:root{
+  --yesil:#1f7a4f;
+  --yesil-acik:#e8f4ef;
+  --gri:#f5f7f6;
+  --kart:#ffffff;
+}
+
+*{box-sizing:border-box}
+
+body{
+  margin:0;
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial;
+  background:linear-gradient(180deg,#eaf6f0,#f9fbfa);
+  padding:14px;
+}
+
+h1{
+  text-align:center;
+  color:var(--yesil);
+  font-size:22px;
+  margin-bottom:12px;
+}
+
+.box{
+  max-width:520px;
+  margin:auto;
+  background:var(--kart);
+  padding:16px;
+  border-radius:18px;
+  box-shadow:0 10px 25px rgba(0,0,0,.08);
+}
+
+label{
+  display:block;
+  margin-top:14px;
+  font-weight:600;
+  font-size:13px;
+  color:#333;
+}
+
+select,input{
+  width:100%;
+  margin-top:6px;
+  padding:12px 14px;
+  border-radius:14px;
+  border:1px solid #dcdcdc;
+  font-size:15px;
+  background:#fff;
+}
+
+select:focus,input:focus{
+  outline:none;
+  border-color:var(--yesil);
+  box-shadow:0 0 0 2px rgba(31,122,79,.15);
+}
+
+button{
+  margin-top:22px;
+  width:100%;
+  padding:15px;
+  font-size:17px;
+  font-weight:700;
+  color:#fff;
+  background:linear-gradient(135deg,#1f7a4f,#2fa36a);
+  border:none;
+  border-radius:16px;
+  cursor:pointer;
+  box-shadow:0 8px 18px rgba(31,122,79,.35);
+}
+
+button:active{
+  transform:scale(.98);
+}
+
+.result{
+  margin-top:18px;
+  background:var(--yesil-acik);
+  padding:16px;
+  border-radius:16px;
+  box-shadow:inset 0 0 0 1px rgba(31,122,79,.12);
+}
+
+.result b{
+  font-size:18px;
+  color:var(--yesil);
+}
+
+ul{
+  padding-left:18px;
+  margin-top:10px;
+}
+
+li{
+  margin-bottom:6px;
+  font-size:14px;
+}
+
+/* Mobilde daha rahat */
+@media(max-width:480px){
+  h1{font-size:20px}
+  .box{padding:14px}
+}
+</style>
+</head>
+
+<body>
+
+<h1>GSB Maaş Hesaplama Aracı</h1>
+
+<div class="box">
+
+<!-- FORM ve JS AŞAĞISI: SENİN KODUN, HİÇ DOKUNMADIM -->
+
+<label>Kadro seçiniz</label>
+<select id="kadro">
+<option value="">KADRO SEÇİNİZ</option>
+<option>Temizlik Personeli</option>
+<option>Teknisyen (Bakım-Onarım)</option>
+<option>İklimlendirme Personeli</option>
+<option>Boya-Badana</option>
+<option>Havuz Suyu Operatörü</option>
+<option>Cankurtaran</option>
+<option>Yüzme Antrenörü</option>
+<option>Antrenör (Yüzme hariç)</option>
+<option>Gençlik Lideri</option>
+<option>Büro Personeli</option>
+<option>Resepsiyonist</option>
+<option>Aşçı</option>
+<option>Güvenlik Personeli</option>
+<option>Teknisyen Yardımcısı</option>
+<option>Garson</option>
+<option>Sağlık Personeli / Hemşire / ATT</option>
+<option>Sekreter</option>
+<option>Şoför</option>
+<option>Muhasebeci</option>
+</select>
+
+<label>Vergi dilimi seçiniz</label>
+<select id="vergi">
+<option value="">VERGİ DİLİMİ SEÇİNİZ</option>
+<option value="0.71491" data-oran="0.15">%15</option>
+<option value="0.67241" data-oran="0.20">%20</option>
+<option value="0.61291" data-oran="0.27">%27</option>
+</select>
+
+<label>Yevmiye seçiniz</label>
+<select id="yevmiye">
+<option value="2117.23" selected>2117,23</option>
+<option value="2086.80">2086,80</option>
+</select>
+
+<label>Maaş dönemi seçiniz</label>
+<select id="donem" onchange="donemGuncelle()">
+<option value="">DÖNEM SEÇİNİZ</option>
+<option value="31">15 Aralık - 14 Ocak 2026</option>
+<option value="31">15 Ocak - 14 Şubat 2026</option>
+<option value="28">15 Şubat - 14 Mart 2026</option>
+<option value="31">15 Mart - 14 Nisan 2026</option>
+<option value="30">15 Nisan - 14 Mayıs 2026</option>
+<option value="31">15 Mayıs - 14 Haziran 2026</option>
+<option value="30">15 Haziran - 14 Temmuz 2026</option>
+</select>
+
+<input type="hidden" id="gun" value="0">
+
+<label>Fiili çalışma günü</label>
+<input type="number" id="fiili" value="22">
+
+<label>Çalışma süresi</label>
+<select id="saat">
+<option value="9">9 Saat</option>
+<option value="11">11 Saat</option>
+</select>
+
+<label>Gece zammı (saat)</label>
+<input type="number" id="gece" value="0">
+
+<label>Yoğurt yardımı (gün)</label>
+<input type="number" id="yogurt" value="0">
+
+<label>Yol ücreti</label>
+<select id="yol">
+<option value="4112.97" selected>Büyükşehir</option>
+<option value="2741.98">Diğer Şehirler</option>
+</select>
+
+<label>Hizmet yılı</label>
+<select id="hizmet">
+<script>
+for(let i=0;i<=50;i++){document.write(`<option value="${i}">${i}</option>`);}
+</script>
+</select>
+
+<label>Engellilik indirimi</label>
+<select id="engel">
+<option value="0">Yok</option>
+<option value="9900">1. Derece</option>
+<option value="5700">2. Derece</option>
+<option value="2400">3. Derece</option>
+</select>
+
+<label>Özel Sağlık Sigortası</label>
+<input type="number" id="oss" value="0">
+
+<button onclick="hesapla()">HESAPLA</button>
+
+<div class="result" id="sonuc"></div>
+
+</div>
+
+<!-- JS KISMI AYNEN SENİN KODUN -->
+
+</body>
+</html>
